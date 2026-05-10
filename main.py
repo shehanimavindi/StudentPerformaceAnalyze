@@ -1,61 +1,39 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
-import joblib
 
 # Load dataset
-df = pd.read_csv("student.csv")
+df = pd.read_csv(r"C:\Users\diluk\OneDrive\Desktop\Projects\StudentPerfomanceAnalyze\student.csv")
 
-print("Dataset Preview:")
-print(df.head())
-
-# -----------------------------
-# Split features and target
-# -----------------------------
-X = df.drop("final_grade", axis=1)
-y = df["final_grade"]
-
-# -----------------------------
-# FIX 1: Convert ALL text columns in X (male, female, etc.)
-# -----------------------------
-X = pd.get_dummies(X)
-
-# -----------------------------
-# FIX 2: Encode target (grades like a,b,c,d,e)
-# -----------------------------
+# Encode grades for colors
 le = LabelEncoder()
-y = le.fit_transform(y)
+df["grade_encoded"] = le.fit_transform(df["final_grade"])
 
-# -----------------------------
-# Train-test split
-# -----------------------------
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+df_sample = df.sample(100, random_state=42)
+
+# Create figure
+plt.figure(figsize=(10,6))
+
+# Scatter plot used smaller dots and transparency for clear graph
+scatter = plt.scatter(
+    df_sample["study_hours"],
+    df_sample["attendance_percentage"],
+    c=df_sample["grade_encoded"],
+    cmap="viridis",
+    s=60,          
+    alpha=0.5      
 )
 
-# -----------------------------
-# Model (classification)
-# -----------------------------
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
+# Labels
+plt.xlabel("Study Hours")
+plt.ylabel("Attendance Percentage")
+plt.title("Student Performance Scatter Plot")
 
-# -----------------------------
-# Predictions
-# -----------------------------
-y_pred = model.predict(X_test)
+# Legend
+handles, _ = scatter.legend_elements()
+plt.legend(handles, le.classes_, title="Grades")
 
-# -----------------------------
-# Evaluation
-# -----------------------------
-print("\nAccuracy:", accuracy_score(y_test, y_pred))
-print("\nReport:\n", classification_report(y_test, y_pred))
+# Grid
+plt.grid(True)
 
-# -----------------------------
-# Save model + encoder
-# -----------------------------
-joblib.dump(model, "student_model.pkl")
-joblib.dump(le, "label_encoder.pkl")
-
-print("\nModel saved successfully!")
+plt.show()
