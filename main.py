@@ -1,39 +1,65 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # Load dataset
 df = pd.read_csv(r"C:\Users\diluk\OneDrive\Desktop\Projects\StudentPerfomanceAnalyze\student.csv")
 
-# Encode grades for colors
+# Convert grades into numbers
 le = LabelEncoder()
-df["grade_encoded"] = le.fit_transform(df["final_grade"])
+df["grade_numeric"] = le.fit_transform(df["final_grade"])
 
-df_sample = df.sample(100, random_state=42)
+# Take sample
+df_sample = df.sample(80, random_state=42)
 
-# Create figure
+# X and y
+X = df_sample[["study_hours"]]
+y = df_sample["grade_numeric"]
+
+# Train model
+model = LinearRegression()
+model.fit(X, y)
+
+# Sort data for smooth line
+sorted_data = df_sample.sort_values(by="study_hours")
+
+# Predictions
+predictions = model.predict(sorted_data[["study_hours"]])
+
+# Create graph
 plt.figure(figsize=(10,6))
 
-# Scatter plot used smaller dots and transparency for clear graph
-scatter = plt.scatter(
-    df_sample["study_hours"],
-    df_sample["attendance_percentage"],
-    c=df_sample["grade_encoded"],
-    cmap="viridis",
-    s=60,          
-    alpha=0.5      
+# Scatter plot
+plt.scatter(
+    sorted_data["study_hours"],
+    sorted_data["grade_numeric"],
+    alpha=0.6,
+    s=60,
+    label="Students"
+)
+
+# Regression line
+plt.plot(
+    sorted_data["study_hours"],
+    predictions,
+    linewidth=3,
+    label="Regression Line"
 )
 
 # Labels
 plt.xlabel("Study Hours")
-plt.ylabel("Attendance Percentage")
-plt.title("Student Performance Scatter Plot")
+plt.ylabel("Grade Level")
+plt.title("Linear Regression: Study Hours vs Final Grade")
 
-# Legend
-handles, _ = scatter.legend_elements()
-plt.legend(handles, le.classes_, title="Grades")
+# Replace numbers with grade labels
+plt.yticks(
+    range(len(le.classes_)),
+    le.classes_
+)
 
-# Grid
+plt.legend()
 plt.grid(True)
 
+# Show graph
 plt.show()
