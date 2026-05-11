@@ -8,33 +8,28 @@ To build a machine learning model that predicts student performance based on aca
 
 
 ## 📂 Dataset Features
-- student_id  
-- age  
-- gender  
-- school_type  
-- parent_education  
-- study_hours  
-- attendance_percentage  
-- internet_access  
-- travel_time  
-- final_score (target variable)
+- Student_id
+- Gender
+- Study_hours
+- Attendance Percentage
+- Final_grade
 
 
 ## 🧠 Machine Learning Workflow
-1. Data Cleaning & Preprocessing  
+1. Load dataset  
 2. Handling categorical variables  
-3. Feature selection  
-4. Model training  
-5. Evaluation  
+3. Convert categorical grades into numeric values
+4. Train Linear Regression model  
+5. Visualize data with regression graph
+6. Predcit Student Performance 
 
 
 ## 📌 Technologies Used
-- Python 🐍  
+- Python 
 - Pandas  
 - NumPy  
 - Scikit-learn  
 - Matplotlib / Seaborn  
-
 
 ## 📊 Models Used
 - Linear Regression  
