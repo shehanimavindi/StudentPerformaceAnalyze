@@ -42,6 +42,13 @@ To build a machine learning model that predicts student performance based on aca
 - Random Forest Regressor  
 
 
-```bash
+## How to run
 pip install -r requirements.txt
 python main.py
+
+## 🎯Learning Outcomes
+- Data Visualization
+- Machine learning workflow
+- Model evaluation techniques
+
+
